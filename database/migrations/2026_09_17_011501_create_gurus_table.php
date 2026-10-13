@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id_guru')->primary();
             $table->string('nama_guru', 40);
             $table->string('nip', 18)->nullable();
+            $table->string('jabatan', 40)->nullable();
             $table->string('mapel', 40)->nullable();
             $table->string('foto', 100)->nullable();
             $table->timestamps();

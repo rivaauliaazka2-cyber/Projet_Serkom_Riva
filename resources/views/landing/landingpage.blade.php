@@ -185,6 +185,50 @@
     </div>
 </section>
 
+{{-- Data Siswa --}}
+<section id="siswa" class="section-padding bg-white">
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <h2 class="section-title">Data Siswa & Siswi</h2>
+            <p class="section-subtitle">
+                Mengenal Siswa & Siswi SMA NEGERI 5 Tasikmalaya
+            </p>
+        </div>
+
+        <div class="row g-4">
+            @forelse ($siswa as $item)
+                <div class="col-md-4 col-lg-3">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body text-center">
+                            <i class="bi bi-person-circle text-primary"
+                               style="font-size: 45px;"></i>
+
+                            <h5 class="mt-3 mb-2">
+                                {{ $item->nama_siswa }}
+                            </h5>
+
+                            <p class="text-muted mb-1">
+                                NISN: {{ $item->nisn }}
+                            </p>
+
+                            <p class="mb-0">
+                                Tahun Masuk: {{ $item->tahun_masuk }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-12 text-center">
+                    <p class="text-muted">
+                        Belum ada data siswa.
+                    </p>
+                </div>
+            @endforelse
+        </div>
+    </div>
+</section>
+
 {{-- ================= GURU ================= --}}
 <section id="guru" class="section-padding bg-white">
     <div class="container">

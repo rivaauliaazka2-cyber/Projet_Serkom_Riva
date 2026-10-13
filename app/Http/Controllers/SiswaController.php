@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Siswa;
+use App\Models\Kelas;
 
 class SiswaController extends Controller
 {
@@ -56,7 +57,9 @@ class SiswaController extends Controller
      */
     public function create()
     {
-        return view('admin.siswa.create');
+        $kelas = Kelas::orderBy('nama_kelas')->get();
+
+        return view('admin.siswa.create', compact('kelas'));
     }
 
     /**
@@ -64,23 +67,20 @@ class SiswaController extends Controller
      */
     public function store(Request $request)
     {
-         $request->validate([
+        $validated = $request->validate([
             'nisn' => 'required',
             'nama_siswa' => 'required',
             'jenis_kelamin' => 'required',
             'tahun_masuk' => 'required',
+            'id_kelas' => 'required|exists:kelas,id_kelas',
         ]);
 
-        Siswa::create([
-            'nisn' => $request->nisn,
-            'nama_siswa' => $request->nama_siswa,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'tahun_masuk' => $request->tahun_masuk,
-        ]);
+        Siswa::create($validated);
 
         return redirect()->route('siswa.index')
             ->with('success', 'Data siswa berhasil ditambahkan');
     }
+
 
     /**
      * Display the specified resource.
@@ -96,8 +96,9 @@ class SiswaController extends Controller
     public function edit(string $id)
     {
         $siswa = Siswa::findOrFail($id);
+        $kelas = Kelas::orderBy('nama_kelas')->get();
 
-        return view('admin.siswa.edit', compact('siswa'));
+        return view('admin.siswa.edit', compact('siswa', 'kelas'));
     }
 
     /**
@@ -107,19 +108,15 @@ class SiswaController extends Controller
     {
         $siswa = Siswa::findOrFail($id);
 
-        $request->validate([
+        $validated = $request->validate([
             'nisn' => 'required',
             'nama_siswa' => 'required',
             'jenis_kelamin' => 'required',
             'tahun_masuk' => 'required',
+            'id_kelas' => 'required|exists:kelas,id_kelas',
         ]);
 
-        $siswa->update([
-            'nisn' => $request->nisn,
-            'nama_siswa' => $request->nama_siswa,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'tahun_masuk' => $request->tahun_masuk,
-        ]);
+        $siswa->update($validated);
 
         return redirect()->route('siswa.index')
             ->with('success', 'Data siswa berhasil diubah');

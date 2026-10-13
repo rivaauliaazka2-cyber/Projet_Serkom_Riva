@@ -9,19 +9,21 @@ use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        DB::table('users')->insert([
-            'id_user' => Str::uuid(),
-            'name' => 'Admin',
-            'username' => 'admin',
-            'password' => Hash::make('admin123'),
-            'role' => 'Admin',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        DB::table('users')->updateOrInsert(
+            ['username' => 'admin'],
+            [
+                'id_user' => DB::table('users')
+                    ->where('username', 'admin')
+                    ->value('id_user') ?? Str::uuid(),
+
+                'name' => 'Admin',
+                'password' => Hash::make('admin123'),
+                'role' => 'Admin',
+                'updated_at' => now(),
+                'created_at' => now(),
+            ]
+        );
     }
 }

@@ -1,15 +1,18 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Models\Berita;
-use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class BeritaController extends Controller
 {
     public function index()
     {
-        $berita = Berita::all();
+        $berita = Berita::latest()->get();
+
         return view('admin.berita.index', compact('berita'));
     }
 
@@ -31,10 +34,12 @@ class BeritaController extends Controller
         $validated['slug'] = Str::slug($request->judul);
 
         if ($request->hasFile('gambar')) {
-            $validated['gambar'] = $request->file('gambar')->store('berita', 'public');
+            $validated['gambar'] = $request->file('gambar')
+                ->store('berita', 'public');
         }
 
-        $validated['id_user'] = User::value('id_user');
+        // Menyimpan ID pengguna yang sedang login
+        $validated['id_user'] = Auth::id();
 
         Berita::create($validated);
 
@@ -49,14 +54,14 @@ class BeritaController extends Controller
 
     public function edit(string $id)
     {
-        $berita = Berita::findOrFail($id);
+        $berita = $this->cariBeritaYangBolehDikelola($id);
 
         return view('admin.berita.edit', compact('berita'));
     }
 
     public function update(Request $request, string $id)
     {
-        $berita = Berita::findOrFail($id);
+        $berita = $this->cariBeritaYangBolehDikelola($id);
 
         $validated = $request->validate([
             'judul'   => 'required|string|max:50',
@@ -69,9 +74,11 @@ class BeritaController extends Controller
         $validated['slug'] = Str::slug($request->judul);
 
         if ($request->hasFile('gambar')) {
-            $validated['gambar'] = $request->file('gambar')->store('berita', 'public');
+            $validated['gambar'] = $request->file('gambar')
+                ->store('berita', 'public');
         }
 
+        // ID pembuat berita tidak diubah saat update
         $berita->update($validated);
 
         return redirect()->route('berita.index')
@@ -80,11 +87,29 @@ class BeritaController extends Controller
 
     public function destroy(string $id)
     {
-        $berita = Berita::findOrFail($id);
+        $berita = $this->cariBeritaYangBolehDikelola($id);
 
         $berita->delete();
 
         return redirect()->route('berita.index')
             ->with('success', 'Berita berhasil dihapus.');
+    }
+
+    /**
+     * Memastikan hanya Admin atau pemilik berita
+     * yang bisa mengedit dan menghapus berita.
+     */
+    private function cariBeritaYangBolehDikelola(string $id)
+    {
+        $berita = Berita::findOrFail($id);
+
+        if (
+            Auth::user()->role !== 'Admin' &&
+            (string) $berita->id_user !== (string) Auth::id()
+        ) {
+            abort(403, 'Kamu tidak boleh mengubah berita milik pengguna lain.');
+        }
+
+        return $berita;
     }
 }

@@ -4,152 +4,137 @@
 
 <div class="container-fluid">
     <div class="card shadow border-0">
-        <div class="card-header bg-danger text-white">
+
+        <div class="card-header text-white" style="background-color: #0066a1;">
             <h4 class="mb-0">
                 <i class="bi bi-person-plus-fill"></i>
                 Tambah Data Guru
             </h4>
         </div>
-    <div class="card-body">
-        @if($errors->any())
-            <div class="alert alert-danger">
-                <ul class="mb-0">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
 
-        <form action="{{ route('guru.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
+        <div class="card-body">
 
-            <div class="mb-3">
-                <label class="form-label">Nama Guru</label>
-                <input type="text" name="nama_guru" class="form-control" value="{{ old('nama_guru') }}" required>
-            </div>
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-            <div class="mb-3">
-                <label class="form-label">NIP</label>
-                <input type="text" name="nip" class="form-control" value="{{ old('nip') }}">
-            </div>
+            <form action="{{ route('guru.store') }}"
+                  method="POST"
+                  enctype="multipart/form-data">
 
-            <div class="mb-3">
-                <label class="form-label">Mata Pelajaran</label>
-                <select name="mapel" class="form-select">
-                    <option value="">-- Pilih Mata Pelajaran --</option>
+                @csrf
 
-                    <option value="Pendidikan Agama Islam" {{ old('mapel') == 'Pendidikan Agama Islam' ? 'selected' : '' }}>
-                        Pendidikan Agama Islam
-                    </option>
+                {{-- Nama Guru --}}
+                <div class="mb-3">
+                    <label class="form-label">Nama Guru</label>
+                    <input type="text"
+                           name="nama_guru"
+                           class="form-control"
+                           value="{{ old('nama_guru') }}"
+                           maxlength="40"
+                           required>
+                </div>
 
-                    <option value="PPKn" {{ old('mapel') == 'PPKn' ? 'selected' : '' }}>
-                        PPKn
-                    </option>
+                {{-- NIP --}}
+                <div class="mb-3">
+                    <label class="form-label">NIP</label>
+                    <input type="text"
+                           name="nip"
+                           class="form-control"
+                           value="{{ old('nip') }}"
+                           maxlength="18">
+                </div>
 
-                    <option value="Bahasa Indonesia" {{ old('mapel') == 'Bahasa Indonesia' ? 'selected' : '' }}>
-                        Bahasa Indonesia
-                    </option>
+                {{-- Jabatan --}}
+                <div class="mb-3">
+                    <label class="form-label">Jabatan</label>
 
-                    <option value="Bahasa Inggris" {{ old('mapel') == 'Bahasa Inggris' ? 'selected' : '' }}>
-                        Bahasa Inggris
-                    </option>
+                    <select name="jabatan" id="jabatan" class="form-select" required>
+                        <option value="">-- Pilih Jabatan --</option>
 
-                    <option value="Matematika" {{ old('mapel') == 'Matematika' ? 'selected' : '' }}>
-                        Matematika
-                    </option>
+                        @foreach($jabatan as $item)
+                            <option value="{{ $item->nama_jabatan }}"
+                                {{ old('jabatan') == $item->nama_jabatan ? 'selected' : '' }}>
+                                {{ $item->nama_jabatan }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
-                    <option value="Fisika" {{ old('mapel') == 'Fisika' ? 'selected' : '' }}>
-                        Fisika
-                    </option>
 
-                    <option value="Kimia" {{ old('mapel') == 'Kimia' ? 'selected' : '' }}>
-                        Kimia
-                    </option>
+                {{-- Mata Pelajaran --}}
+                <div class="mb-3" id="mapel-container">
+                    <label class="form-label">Mata Pelajaran</label>
 
-                    <option value="Biologi" {{ old('mapel') == 'Biologi' ? 'selected' : '' }}>
-                        Biologi
-                    </option>
+                    <select name="mapel" id="mapel" class="form-select">
+                        <option value="">Pilih Mata Pelajaran</option>
 
-                    <option value="Sejarah" {{ old('mapel') == 'Sejarah' ? 'selected' : '' }}>
-                        Sejarah
-                    </option>
+                        @foreach($mapel as $item)
+                            <option value="{{ $item->nama_mapel }}"
+                                {{ old('mapel') == $item->nama_mapel ? 'selected' : '' }}>
+                                {{ $item->nama_mapel }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
-                    <option value="Geografi" {{ old('mapel') == 'Geografi' ? 'selected' : '' }}>
-                        Geografi
-                    </option>
+                {{-- Foto Guru --}}
+                <div class="mb-3">
+                    <label class="form-label">Foto Guru</label>
+                    <input type="file"
+                           name="foto"
+                           class="form-control"
+                           accept="image/jpeg,image/png,image/webp">
+                </div>
 
-                    <option value="Sosiologi" {{ old('mapel') == 'Sosiologi' ? 'selected' : '' }}>
-                        Sosiologi
-                    </option>
+                {{-- Tombol --}}
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Simpan
+                    </button>
 
-                    <option value="Ekonomi" {{ old('mapel') == 'Ekonomi' ? 'selected' : '' }}>
-                        Ekonomi
-                    </option>
+                    <a href="{{ route('guru.index') }}"
+                       class="btn btn-secondary">
+                        Kembali
+                    </a>
+                </div>
 
-                    <option value="Informatika" {{ old('mapel') == 'Informatika' ? 'selected' : '' }}>
-                        Informatika
-                    </option>
-
-                    <option value="PJOK" {{ old('mapel') == 'PJOK' ? 'selected' : '' }}>
-                        PJOK
-                    </option>
-
-                    <option value="Seni Budaya" {{ old('mapel') == 'Seni Budaya' ? 'selected' : '' }}>
-                        Seni Budaya
-                    </option>
-
-                    <option value="Bahasa Sunda" {{ old('mapel') == 'Bahasa Sunda' ? 'selected' : '' }}>
-                        Bahasa Sunda
-                    </option>
-
-                    <option value="Bahasa Jepang" {{ old('mapel') == 'Bahasa Jepang' ? 'selected' : '' }}>
-                        Bahasa Jepang
-                    </option>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Jabatan</label>
-                <select name="jabatan" class="form-select">
-                    <option value="">-- Pilih Jabatan --</option>
-
-                    <option value="Kepala Sekolah">Kepala Sekolah</option>
-
-                    <option value="Wakasek Kurikulum">Wakasek Kurikulum</option>
-                    <option value="Wakasek Kesiswaan">Wakasek Kesiswaan</option>
-                    <option value="Wakasek Sarana dan Prasarana">Wakasek Sarana dan Prasarana</option>
-                    <option value="Wakasek Hubungan Masyarakat">Wakasek Hubungan Masyarakat</option>
-
-                    <option value="Kepala Tata Usaha">Kepala Tata Usaha</option>
-                    <option value="Kepala Perpustakaan">Kepala Perpustakaan</option>
-                    <option value="Kepala Laboratorium">Kepala Laboratorium</option>
-
-                    <option value="Guru Mata Pelajaran">Guru Mata Pelajaran</option>
-                    <option value="Guru BK">Guru BK</option>
-                    <option value="Wali Kelas">Wali Kelas</option>
-
-                    <option value="Pembina OSIS">Pembina OSIS</option>
-                    <option value="Pembina Ekstrakurikuler">Pembina Ekstrakurikuler</option>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Foto Guru</label>
-                <input type="file" name="foto" class="form-control" accept="image/*">
-            </div>
-
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-save"></i> Simpan
-                </button>
-
-                <a href="{{ route('guru.index') }}" class="btn btn-secondary">
-                    Kembali
-                </a>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
-</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const jabatan = document.getElementById('jabatan');
+    const mapel = document.getElementById('mapel');
+    const container = document.getElementById('mapel-container');
+
+    function aturMapel() {
+        const tanpaMapel = [
+            'Kepala Sekolah',
+            'Staff Tata Usaha',
+        ];
+
+        if (tanpaMapel.includes(jabatan.value)) {
+            mapel.value = '';
+            mapel.required = false;
+            container.style.display = 'none';
+        } else {
+            container.style.display = 'block';
+            mapel.required = jabatan.value !== '';
+        }
+    }
+
+    jabatan.addEventListener('change', aturMapel);
+    aturMapel();
+});
+</script>
+
 @endsection

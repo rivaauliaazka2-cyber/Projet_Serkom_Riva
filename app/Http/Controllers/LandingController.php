@@ -33,6 +33,10 @@ class LandingController extends Controller
             ->take(6)
             ->get();
 
+            $siswa = Siswa::latest()
+            ->take(6)
+            ->get();
+
         $guru = Guru::latest()
             ->take(6)
             ->get();
@@ -55,6 +59,7 @@ class LandingController extends Controller
             'jumlahEkskul',
             'beritaTerbaru',
             'prestasiTerbaru',
+            'siswa',
             'ekskul',
             'guru',
             'galeri',

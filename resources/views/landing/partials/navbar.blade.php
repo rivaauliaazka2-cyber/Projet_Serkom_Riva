@@ -26,6 +26,10 @@
                        href="{{ route('landing') }}#profil">Tentang</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link nav-section-link" data-section="siswa"
+                       href="{{ route('landing') }}#siswa">Siswa</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link nav-section-link" data-section="guru"
                        href="{{ route('landing') }}#guru">Guru</a>
                 </li>

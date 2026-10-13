@@ -21,8 +21,8 @@ class Guru extends Model
         'id_guru',
         'nama_guru',
         'nip',
-        'mapel',
         'jabatan',
+        'mapel',
         'foto',
     ];
 }

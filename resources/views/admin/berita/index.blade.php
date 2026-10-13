@@ -6,11 +6,10 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="mb-0">Data Berita</h4>
 
-        @if(auth()->user()->role == 'Admin')
-            <a href="{{ route('berita.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Tambah Berita
-            </a>
-        @endif
+        {{-- Admin dan Operator bisa menambah berita --}}
+        <a href="{{ route('berita.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Tambah Berita
+        </a>
     </div>
 
     <div class="card-body">
@@ -61,17 +60,23 @@
                         </td>
 
                         <td>
-                            @if(auth()->user()->role == 'Admin')
+                            {{-- Admin bisa mengelola semua berita.
+                                 Operator hanya berita miliknya sendiri. --}}
+                            @if(
+                                auth()->user()->role == 'Admin' ||
+                                (string) $item->id_user === (string) auth()->id()
+                            )
 
                                 <a href="{{ route('berita.edit', $item->id_berita) }}"
-                                class="btn btn-warning btn-sm"
-                                title="Edit">
+                                   class="btn btn-warning btn-sm"
+                                   title="Edit">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
 
                                 <form action="{{ route('berita.destroy', $item->id_berita) }}"
-                                    method="POST"
-                                    onsubmit="return confirm('Yakin ingin menghapus berita ini?')">
+                                      method="POST"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Yakin ingin menghapus berita ini?')">
 
                                     @csrf
                                     @method('DELETE')
@@ -83,6 +88,8 @@
                                     </button>
                                 </form>
 
+                            @else
+                                <span class="text-muted">Tidak ada aksi</span>
                             @endif
                         </td>
                     </tr>

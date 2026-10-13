@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -24,15 +25,14 @@ use App\Models\Galeri;
 use App\Models\Pengumuman;
 
 
-Route::get('/', [LandingController::class, 'index'])
-    ->name('landing');
-
-
 /*
 |--------------------------------------------------------------------------
-| TENTANG SEKOLAH
+| LANDING PAGE
 |--------------------------------------------------------------------------
 */
+
+Route::get('/', [LandingController::class, 'index'])
+    ->name('landing');
 
 Route::get('/tentang', function () {
     $profil = ProfilSekolah::first();
@@ -40,12 +40,6 @@ Route::get('/tentang', function () {
     return view('landing.tentang', compact('profil'));
 })->name('landing.tentang');
 
-
-/*
-|--------------------------------------------------------------------------
-| HALAMAN PUBLIK: BERITA
-|--------------------------------------------------------------------------
-*/
 
 Route::get('/daftar-berita', function () {
     $berita = Berita::where('status', 'Publish')
@@ -64,12 +58,6 @@ Route::get('/detail-berita/{slug}', function ($slug) {
 })->name('landing.berita.detail');
 
 
-/*
-|--------------------------------------------------------------------------
-| HALAMAN PUBLIK: PRESTASI
-|--------------------------------------------------------------------------
-*/
-
 Route::get('/daftar-prestasi', function () {
     $prestasi = Prestasi::latest()->get();
 
@@ -84,12 +72,6 @@ Route::get('/detail-prestasi/{slug}', function ($slug) {
 })->name('landing.prestasi.detail');
 
 
-/*
-|--------------------------------------------------------------------------
-| HALAMAN PUBLIK: GALERI
-|--------------------------------------------------------------------------
-*/
-
 Route::get('/daftar-galeri', function () {
     $galeri = Galeri::latest()->get();
 
@@ -103,12 +85,6 @@ Route::get('/detail-galeri/{id_galeri}', function ($id_galeri) {
     return view('landing.galeri_detail', compact('galeri'));
 })->name('landing.galeri.detail');
 
-
-/*
-|--------------------------------------------------------------------------
-| HALAMAN PUBLIK: PENGUMUMAN
-|--------------------------------------------------------------------------
-*/
 
 Route::get('/daftar-pengumuman', function () {
     $pengumuman = Pengumuman::where('status', 'Publish')
@@ -127,12 +103,6 @@ Route::get('/detail-pengumuman/{id_pengumuman}', function ($id_pengumuman) {
 })->name('landing.pengumuman.detail');
 
 
-/*
-|--------------------------------------------------------------------------
-| HALAMAN PUBLIK: EKSTRAKURIKULER
-|--------------------------------------------------------------------------
-*/
-
 Route::get('/daftar-ekskul', function () {
     $ekskul = Ekstrakurikuler::latest()->get();
 
@@ -146,12 +116,6 @@ Route::get('/detail-ekskul/{id_ekskul}', function ($id_ekskul) {
     return view('landing.ekskul_detail', compact('ekskul'));
 })->name('landing.ekskul.detail');
 
-
-/*
-|--------------------------------------------------------------------------
-| HALAMAN PUBLIK: GURU
-|--------------------------------------------------------------------------
-*/
 
 Route::get('/daftar-guru', function () {
     $guru = Guru::orderBy('nama_guru', 'asc')->get();
@@ -173,17 +137,14 @@ Route::get('/detail-guru/{id_guru}', function ($id_guru) {
 |--------------------------------------------------------------------------
 */
 
-// Menampilkan halaman login
 Route::get('/login', [AuthController::class, 'index'])
     ->middleware('guest')
     ->name('login');
 
-// Memproses login
 Route::post('/login', [AuthController::class, 'auth'])
     ->middleware('guest')
     ->name('auth');
 
-// Logout
 Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
@@ -191,17 +152,22 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 /*
 |--------------------------------------------------------------------------
-| DASHBOARD
+| DASHBOARD DAN HAK AKSES
 |--------------------------------------------------------------------------
 */
 
 Route::middleware('auth')->group(function () {
 
+    // Dashboard: Admin dan Operator
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('admin.dashboard');
 
 
-
+    /*
+    |--------------------------------------------------------------------------
+    | HALAMAN DAFTAR: ADMIN DAN OPERATOR
+    |--------------------------------------------------------------------------
+    */
 
     Route::get('/berita', [BeritaController::class, 'index'])
         ->name('berita.index');
@@ -212,59 +178,71 @@ Route::middleware('auth')->group(function () {
     Route::get('/prestasi', [PrestasiController::class, 'index'])
         ->name('prestasi.index');
 
-    Route::get('/siswa', [SiswaController::class, 'index'])
-        ->name('siswa.index');
-
     Route::get('/pengumuman', [PengumumanController::class, 'index'])
         ->name('pengumuman.index');
 
     Route::get('/ekskul', [EkskulController::class, 'index'])
         ->name('ekskul.index');
 
+    // Operator boleh melihat data Guru dan Siswa
     Route::get('/guru', [GuruController::class, 'index'])
         ->name('guru.index');
 
+    Route::get('/siswa', [SiswaController::class, 'index'])
+        ->name('siswa.index');
+
+    // Operator boleh melihat Profil Sekolah
     Route::get('/profil', [ProfilSekolahController::class, 'index'])
         ->name('profil.index');
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | CRUD: ADMIN DAN OPERATOR
+    |--------------------------------------------------------------------------
+    */
+
+    Route::resource('berita', BeritaController::class)
+        ->except(['index', 'show']);
+
+    Route::resource('galeri', GaleriController::class)
+        ->except(['index', 'show']);
+
+    Route::resource('prestasi', PrestasiController::class)
+        ->except(['index', 'show']);
+
+    Route::resource('pengumuman', PengumumanController::class)
+        ->except(['index', 'show']);
+
+    Route::resource('ekskul', EkskulController::class)
+        ->except(['index', 'show']);
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CRUD KHUSUS ADMIN
+    |--------------------------------------------------------------------------
+    */
 
     Route::middleware('role:Admin')->group(function () {
 
-        Route::resource('berita', BeritaController::class)
-            ->names('berita')
-            ->except(['index', 'show']);
-
-        Route::resource('galeri', GaleriController::class)
-            ->names('galeri')
-            ->except(['index', 'show']);
-
-        Route::resource('prestasi', PrestasiController::class)
-            ->names('prestasi')
-            ->except(['index', 'show']);
-
-        Route::resource('siswa', SiswaController::class)
-            ->names('siswa')
-            ->except(['index', 'show']);
-
-        Route::resource('pengumuman', PengumumanController::class)
-            ->names('pengumuman')
-            ->except(['index', 'show']);
-
-        Route::resource('ekskul', EkskulController::class)
-            ->names('ekskul')
-            ->except(['index', 'show']);
-
+        // CRUD Guru
         Route::resource('guru', GuruController::class)
-            ->names('guru')
             ->except(['index', 'show']);
 
-        Route::resource('profil', ProfilSekolahController::class)
-            ->names('profil')
+        // CRUD Siswa
+        Route::resource('siswa', SiswaController::class)
             ->except(['index', 'show']);
 
+        // Profil Sekolah: Admin saja yang boleh mengedit
+        Route::get('/profil/{id}/edit', [ProfilSekolahController::class, 'edit'])
+            ->name('profil.edit');
+
+        Route::put('/profil/{id}', [ProfilSekolahController::class, 'update'])
+            ->name('profil.update');
+
+        // Manajemen pengguna: Admin saja
         Route::resource('user', UserController::class)
-            ->names('user')
             ->except(['show']);
     });
 

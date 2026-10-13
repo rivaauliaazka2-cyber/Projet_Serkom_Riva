@@ -23,17 +23,13 @@
         </div>
     </div>
 </section>
-
 {{-- ================= IDENTITAS SEKOLAH ================= --}}
 <section class="py-5 bg-white">
     <div class="container">
-
         <div class="row justify-content-center">
             <div class="col-lg-10">
-
                 <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
                     <div class="card-body p-4 p-md-5">
-
                         <div class="text-center mb-4">
                             <img
                                 src="{{ asset('assets/images/logosma-removebg-preview.png') }}"
@@ -41,7 +37,6 @@
                                 style="width:110px;height:110px;object-fit:contain;"
                                 class="mb-3"
                             >
-
                             <h2 class="fw-bold" style="color:#0066a1;">
                                 {{ $profil->nama_sekolah ?? 'SMA NEGERI 5 TASIKMALAYA' }}
                             </h2>
@@ -50,14 +45,12 @@
                                 Identitas Resmi Sekolah
                             </p>
                         </div>
-
                         <hr class="my-4">
 
                         <h4 class="fw-bold mb-4" style="color:#0066a1;">
                             <i class="bi bi-building me-2"></i>
                             Identitas Sekolah
                         </h4>
-
                         <div class="table-responsive">
                             <table class="table table-borderless align-middle mb-0">
                                 <tbody>
@@ -99,7 +92,6 @@
 
     </div>
 </section>
-
 {{-- ================= VISI DAN MISI ================= --}}
 <section class="py-5" style="background:#f5f9ff;">
     <div class="container">
@@ -108,37 +100,29 @@
             <h2 class="fw-bold" style="color:#0066a1;">
                 Visi dan Misi
             </h2>
-
             <p class="text-muted">
                 Arah dan tujuan pendidikan SMA Negeri 5 Tasikmalaya
             </p>
         </div>
-
         @php
             $visiMisi = trim($profil->visi_misi ?? '');
-
             $bagian = preg_split(
                 '/\bMisi\s*:/i',
                 $visiMisi,
                 2
             );
-
             $visi = preg_replace(
                 '/^\s*Visi\s*:/i',
                 '',
                 trim($bagian[0] ?? '')
             );
-
             $misi = trim($bagian[1] ?? '');
         @endphp
-
         <div class="row g-4">
-
             {{-- VISI --}}
             <div class="col-lg-6">
                 <div class="card h-100 border-0 shadow-sm rounded-4">
                     <div class="card-body p-4 p-md-5">
-
                         <div class="d-flex align-items-center mb-4">
                             <div class="rounded-3 d-flex align-items-center
                                         justify-content-center me-3"
@@ -167,7 +151,6 @@
                     </div>
                 </div>
             </div>
-
             {{-- MISI --}}
             <div class="col-lg-6">
                 <div class="card h-100 border-0 shadow-sm rounded-4">
@@ -186,7 +169,6 @@
                                 Misi
                             </h3>
                         </div>
-
                         @if($misi)
                             <div class="text-muted"
                                  style="line-height:1.9;white-space:pre-line;">
@@ -205,7 +187,6 @@
         </div>
     </div>
 </section>
-
 {{-- ================= KEMBALI ================= --}}
 <section class="py-4 bg-white">
     <div class="container text-center">
@@ -216,5 +197,4 @@
         </a>
     </div>
 </section>
-
 @endsection

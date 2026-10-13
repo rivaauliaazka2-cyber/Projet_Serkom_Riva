@@ -10,11 +10,9 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2>Data Ekstrakurikuler</h2>
 
-                @if(auth()->user()->role == 'Admin')
-                    <a href="{{ route('ekskul.create') }}" class="btn btn-primary">
-                        <i class="bi bi-plus-circle"></i> Tambah Ekskul
-                    </a>
-                @endif
+                <a href="{{ route('ekskul.create') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Tambah Ekstrakurikuler
+                </a>
             </div>
 
             @if(session('success'))
